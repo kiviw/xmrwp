@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Monero Payment Gateway
  * Description: WooCommerce payment gateway for Monero.
- * Version: 1.0
+ * Version: 1.0.1
  * Author: Your Name
  */
 
@@ -25,8 +25,8 @@ class WC_Monero_Payment_Gateway extends WC_Payment_Gateway {
         $this->init_form_fields();
         $this->init_settings();
 
-        $this->generateAndWriteSubaddress(); // Generate and write subaddress on plugin activation
-
+        // Hooks for the gateway
+        add_action('woocommerce_update_options_payment_gateways_' . $this->id, array($this, 'process_admin_options'));
         add_action('woocommerce_review_order_before_payment', array($this, 'displayMoneroSubaddress'));
     }
 
