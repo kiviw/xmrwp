@@ -2,7 +2,7 @@
 /*
  * Plugin Name: Monero Payment Gateway
  * Description: WooCommerce payment gateway for Monero.
- * Version: 1.0.1
+ * Version: 1.0
  * Author: Your Name
  */
 
@@ -54,6 +54,9 @@ class WC_Monero_Payment_Gateway extends WC_Payment_Gateway {
 
         // Write subaddress to the file
         file_put_contents($subaddressFile, $subaddress . PHP_EOL, FILE_APPEND);
+
+        // Allow time for the file system to catch up
+        sleep(1);
     }
 
     private function getLastSubaddress() {
@@ -62,10 +65,14 @@ class WC_Monero_Payment_Gateway extends WC_Payment_Gateway {
         // Read the subaddress file
         $subaddresses = file($subaddressFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
-        // Get the last subaddress
-        $lastSubaddress = end($subaddresses);
-
-        return $lastSubaddress;
+        // Check if there are any subaddresses
+        if (!empty($subaddresses)) {
+            // Get the last subaddress
+            $lastSubaddress = end($subaddresses);
+            return $lastSubaddress;
+        } else {
+            return 'No subaddress available'; // You can customize this message
+        }
     }
 
     public function displayMoneroSubaddress() {
